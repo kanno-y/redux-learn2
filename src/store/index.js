@@ -1,6 +1,8 @@
 import { combineReducers, createStore } from "redux";
 import { countReducer } from "../reducers/countReducer";
 import { postsReducer } from "../reducers/postsReducer";
+import { persistStore, persistReducer } from "redux-persist";
+import storage from "redux-persist/lib/storage";
 
 // const initialState = {
 //   count: 50,
@@ -27,10 +29,17 @@ const rootReducer = combineReducers({
   postsReducer,
 });
 
+const persistConfig = {
+  key: "root",
+  storage,
+};
+
+const persistedReducer = persistReducer(persistConfig, rootReducer);
+
 const store = createStore(
-  rootReducer,
+  persistedReducer,
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 );
-console.log(store.getState());
 
+export const persistor = persistStore(store);
 export default store;
